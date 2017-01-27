@@ -1,0 +1,26 @@
+<ui:composition xmlns:p="http://primefaces.org/ui" 
+                xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:composite="http://java.sun.com/jsf/composite"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:x="http://myfaces.apache.org/tomahawk" 
+                xmlns:f="http://java.sun.com/jsf/core" 
+                intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <h:form prependId="false" enctype="multipart/form-data">
+        <div class="box box-color lightgrey box-bordered">
+
+            <div class="box-title">
+                <h3>
+                    <i class="fa fa-upload"></i>
+                    <h:outputText value="#{msgs.usergroups}" />
+                </h3>
+            </div>
+
+            <div class="box-content nopadding">
+             	<h:outputText styleClass="margin-left-10 margin-top-10 font-light" value="my plugin template"/>
+             </div>
+        </div>
+    </h:form>
+</ui:composition>
