@@ -8,7 +8,7 @@
                 intranda="http://xmlns.jcp.org/jsf/composite/composites" 
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-    <h:form prependId="false" enctype="multipart/form-data">
+    <h:form id="assignedusers" prependId="false">
         <div class="box box-color lightgrey box-bordered">
 
             <div class="box-title">
@@ -19,7 +19,68 @@
             </div>
 
             <div class="box-content nopadding">
-             	<h:outputText styleClass="margin-left-10 margin-top-10 font-light" value="my plugin template"/>
+             	
+				<x:dataTable id="groups" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" 
+					var="item" value="#{AktuelleSchritteForm.myPlugin.oldGroups}">
+
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.benutzergruppe}" />
+						</f:facet>
+						<h:outputText value="#{item.titel}" />
+					</h:column>
+
+				</x:dataTable>
+             	
+             	<div class="dataTables_wrapper">
+								<div class="dataTables_length">
+									<h:outputText value="#{msgs.treffer}: #{AktuelleSchritteForm.myPlugin.users.size()}" />
+								</div>
+				<x:dataTable id="users" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" 
+					var="item" value="#{AktuelleSchritteForm.myPlugin.users}">
+
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.benutzer}" />
+						</f:facet>
+						<h:outputText value="#{item.user.nachVorname}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msgs.auswahl}" />
+						</f:facet>
+						<!-- Toggle user membership -->
+						<h:commandLink id="edit" styleClass="btn #{item.member?'btn-green':''} margin-right-5" rel="tooltip" action="#{NavigationForm.Reload}" title="#{msgs.editDocket}">
+							<i class="fa fa-check"></i>
+							<f:passThroughAttribute name="data-toggle" value="tooltip" />
+							<f:setPropertyActionListener target="#{item.member}" value="#{!item.member}" />
+							<f:ajax render=":assignedusers"/>
+						</h:commandLink>
+						
+					</h:column>
+					
+
+				</x:dataTable>
+             	<div class="dataTables_info" style="width:100%; padding-right:20px">
+									<!-- reset -->
+									<h:commandLink id="userassign-cancel" styleClass="btn font-size-s" action="#{DocketForm.Neu}" immediate="true">
+										<h:outputText value="#{msgs.abbrechen}" />
+									</h:commandLink>
+									
+									<!-- save -->
+									<h:commandLink id="userassign-save" styleClass="btn btn-green font-size-s pull-right" action="#{DocketForm.Neu}" immediate="true">
+										<i class="fa fa-save margin-right-5"></i>
+										<h:outputText value="#{msgs.uebernehmen}" />
+									</h:commandLink>
+								</div>
+				</div>
+             	
+             	
+             	
+             	
+             	
+             	
              </div>
         </div>
     </h:form>
