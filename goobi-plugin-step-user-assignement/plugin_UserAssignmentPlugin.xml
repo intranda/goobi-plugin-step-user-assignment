@@ -1,0 +1,10 @@
+<config_plugin>
+	<config>
+		<!-- which process template name (can be more then one, otherwise use *) -->
+		<workflow>User_assignment_workflow</workflow>
+		<!-- configure the step name where the assignement shall be done (e.g. user assignement step) -->
+		<assignmentStep>Entscheiderschritt</assignmentStep>
+		<!-- configure the step name for which the users shall be assigned (e.g. Scanning)-->
+		<targetStep>Bilder einspielen</targetStep>
+	</config>
+</config_plugin>
