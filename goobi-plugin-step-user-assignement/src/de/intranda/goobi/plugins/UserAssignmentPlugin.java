@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -23,9 +26,11 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.primefaces.event.FileUploadEvent;
 
 import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.samples.BenutzergruppenTest;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import lombok.extern.log4j.Log4j;
@@ -33,23 +38,56 @@ import lombok.extern.log4j.Log4j;
 @PluginImplementation
 @Log4j
 public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlugin, IPlugin {
-
+	private static final Logger logger = Logger.getLogger(UserAssignmentPlugin.class);
 	private static final String PLUGIN_NAME = "intranda_step_user_assignment";
 	private Step targetStep;
 	private List<Usergroup> oldGroups;
 	private List<UserWrapper> users;
-
+	private String configAssignmentStepName;
+	private String configTargetStepName;
+	
+	/**
+	 * initialise, read config etc.
+	 */
 	public void initialize(Step step, String returnPath) {
+    	// get workflow name from properties
+		String workflowName = "";
+		for (Processproperty pp : step.getProzess().getEigenschaften()) {
+			if (pp.getTitel().equals("Template")){
+				workflowName = pp.getWert();
+			}
+		}
+		
+    	// get the correct configuration for the right workflow
+		HierarchicalConfiguration myconfig = null;
+    	List<HierarchicalConfiguration> configs = ConfigPlugins.getPluginConfig(this).configurationsAt("config");
+        for (HierarchicalConfiguration hc : configs) {
+        	List<HierarchicalConfiguration> workflows = hc.configurationsAt("workflow");
+            for (HierarchicalConfiguration workflow : workflows) {
+            	if (myconfig == null || workflow.getString("").equals("*") || workflow.getString("").equals(workflowName) ){
+            		myconfig = hc;
+            	}
+            }
+        }
+    	
+        // get right parameters from configuratino
+        configAssignmentStepName = myconfig.getString("assignmentStep", "- no assignment configured -");
+        configTargetStepName = myconfig.getString("targetStep", "- no assignment configured -");
 		super.returnPath = returnPath;
 		super.myStep = step;
+		loadAllCurrentUsers();
+	}
+
+	/**
+	 * load all current users and user groups
+	 */
+	private void loadAllCurrentUsers() {
 		oldGroups = new ArrayList<>();
 		users = new ArrayList<UserWrapper>();
 
-		// find the right step
-		String targetStepTitle = "Scannen";
 		// collect all users
 		for (Step s : myStep.getProzess().getSchritte()) {
-			if (s.getTitel().equals(targetStepTitle)) {
+			if (s.getTitel().equals(configTargetStepName)) {
 				targetStep = s;
 				// get all current usergroups
 				for (Usergroup ug : s.getBenutzergruppen()) {
@@ -68,6 +106,9 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 		}
 	}
 
+	/**
+	 * check if a user exists in our internal list to avoid duplicates
+	 */
 	private boolean userExistsInList(User u) {
 		for (UserWrapper userWrapper : users) {
 			if (userWrapper.getUser().equals(u)) {
@@ -77,6 +118,54 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 		return false;
 	}
 
+
+	/**
+	 * assign the newly selected users to the target step now
+	 */
+	public void assignSelectedUsers(){
+		// any user selected at all?
+		boolean anySelected = false;
+		for (UserWrapper userWrapper : users) {
+			if (userWrapper.getMember()) {
+				anySelected = true;
+			}
+		}
+		// no user selected - stop now
+		if (!anySelected){
+			Helper.setFehlerMeldung("plugin_user_assignment_noUserForStepSelected");
+			return;
+		}
+		
+		// users where selected - assign these now to target step
+		for (Usergroup ug : targetStep.getBenutzergruppen()) {
+			StepManager.removeUsergroupFromStep(targetStep, ug);
+		}
+		for (User u : targetStep.getBenutzer()){
+			StepManager.removeUserFromStep(targetStep, u);
+		}
+		targetStep.setBenutzer(new ArrayList<User>());
+		targetStep.setBenutzergruppen(new ArrayList<Usergroup>());
+		for (UserWrapper userWrapper : users) {
+			if (userWrapper.getMember()) {
+				targetStep.getBenutzer().add(userWrapper.getUser());
+			}
+		}
+		try {
+			StepManager.saveStep(targetStep);
+		} catch (DAOException e) {
+			Helper.setFehlerMeldung("Error while saving the target step", e);
+			logger.error("DAOException while saving the target steps", e);
+		}
+		
+		// load again all new assigned user and show success message
+		loadAllCurrentUsers();
+		Helper.setMeldung("plugin_user_assignment_UserAssignmentSuccessfullyFinished");
+		
+	}
+
+	/**
+	 * Getter and setter
+	 */
 	public List<Usergroup> getOldGroups() {
 		return oldGroups;
 	}

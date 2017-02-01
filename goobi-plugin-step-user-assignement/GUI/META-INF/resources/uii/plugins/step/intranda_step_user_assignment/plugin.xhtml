@@ -13,74 +13,55 @@
 
             <div class="box-title">
                 <h3>
-                    <i class="fa fa-upload"></i>
-                    <h:outputText value="#{msgs.usergroups}" />
+                    <i class="fa fa-users"></i>
+                    <h:outputText value="#{msgs.plugin_user_assignment_title}" />
                 </h3>
             </div>
 
-            <div class="box-content nopadding">
-             	
-				<x:dataTable id="groups" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" 
+            <div class="box-content">
+             	<h5>
+					<h:outputText value="#{msgs.plugin_user_assignment_currentlyAssignedUserGroups}:" />
+				</h5>
+				<h:outputText value="#{msgs.plugin_user_assignment_currentlyNoUserAssigned}" rendered="#{AktuelleSchritteForm.myPlugin.oldGroups.size() == 0}" style="margin-left:10px"/>
+				<x:dataTable id="groups" styleClass="table table-hover table-nomargin dataTable table-bordered responsive border-right-light" rendered="#{AktuelleSchritteForm.myPlugin.oldGroups.size() > 0}"
 					var="item" value="#{AktuelleSchritteForm.myPlugin.oldGroups}">
-
 					<h:column>
-						<f:facet name="header">
-							<h:outputText value="#{msgs.benutzergruppe}" />
-						</f:facet>
 						<h:outputText value="#{item.titel}" />
 					</h:column>
-
 				</x:dataTable>
-             	
-             	<div class="dataTables_wrapper">
-								<div class="dataTables_length">
-									<h:outputText value="#{msgs.treffer}: #{AktuelleSchritteForm.myPlugin.users.size()}" />
-								</div>
-				<x:dataTable id="users" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" 
-					var="item" value="#{AktuelleSchritteForm.myPlugin.users}">
-
-					<h:column>
-						<f:facet name="header">
-							<h:outputText value="#{msgs.benutzer}" />
-						</f:facet>
-						<h:outputText value="#{item.user.nachVorname}" />
-					</h:column>
-
-					<h:column>
-						<f:facet name="header">
-							<h:outputText value="#{msgs.auswahl}" />
-						</f:facet>
-						<!-- Toggle user membership -->
-						<h:commandLink id="edit" styleClass="btn #{item.member?'btn-green':''} margin-right-5" rel="tooltip" action="#{NavigationForm.Reload}" title="#{msgs.editDocket}">
-							<i class="fa fa-check"></i>
-							<f:passThroughAttribute name="data-toggle" value="tooltip" />
-							<f:setPropertyActionListener target="#{item.member}" value="#{!item.member}" />
-							<f:ajax render=":assignedusers"/>
-						</h:commandLink>
-						
-					</h:column>
+             	<br/>
+             	<br/>
+             	<div class="dataTables_wrapper margin-top-10 block">
+					<h5>
+						<h:outputText value="#{msgs.plugin_user_assignment_selectUsersToAssign} (#{AktuelleSchritteForm.myPlugin.users.size()}):" />
+					</h5>
 					
-
-				</x:dataTable>
-             	<div class="dataTables_info" style="width:100%; padding-right:20px">
-									<!-- reset -->
-									<h:commandLink id="userassign-cancel" styleClass="btn font-size-s" action="#{DocketForm.Neu}" immediate="true">
-										<h:outputText value="#{msgs.abbrechen}" />
-									</h:commandLink>
-									
-									<!-- save -->
-									<h:commandLink id="userassign-save" styleClass="btn btn-green font-size-s pull-right" action="#{DocketForm.Neu}" immediate="true">
-										<i class="fa fa-save margin-right-5"></i>
-										<h:outputText value="#{msgs.uebernehmen}" />
-									</h:commandLink>
-								</div>
+					<h:outputText value="#{msgs.plugin_user_assignment_currentlyNoUserAssignable}" rendered="#{AktuelleSchritteForm.myPlugin.users.size() == 0}" style="margin-left:10px"/>
+					<x:dataTable id="users" styleClass="table table-hover table-nomargin dataTable table-bordered responsive border-right-light" 
+						var="item" value="#{AktuelleSchritteForm.myPlugin.users}" rendered="#{AktuelleSchritteForm.myPlugin.users.size() > 0}">
+						<h:column>
+							<h:outputText value="#{item.user.nachVorname}" />
+						</h:column>
+	
+						<h:column>
+							<!-- Toggle user membership -->
+							<h:commandLink id="edit" styleClass="btn #{item.member?'btn-green':''} margin-right-5" rel="tooltip" action="#{NavigationForm.Reload}">
+								<i class="fa fa-check"></i>
+								<f:passThroughAttribute name="data-toggle" value="tooltip" />
+								<f:setPropertyActionListener target="#{item.member}" value="#{!item.member}" />
+								<f:ajax render=":assignedusers"/>
+							</h:commandLink>
+						</h:column>
+					</x:dataTable>
+	
+	             	<div class="dataTables_info" style="width:100%; padding-right:20px">
+						<!-- save -->
+						<h:commandLink id="userassign-save" styleClass="btn btn-lightgrey font-size-s pull-right" action="#{AktuelleSchritteForm.myPlugin.assignSelectedUsers}" immediate="true">
+							<i class="fa fa-save margin-right-5"></i>
+							<h:outputText value="#{msgs.uebernehmen}" />
+						</h:commandLink>
+					</div>
 				</div>
-             	
-             	
-             	
-             	
-             	
-             	
              </div>
         </div>
     </h:form>
