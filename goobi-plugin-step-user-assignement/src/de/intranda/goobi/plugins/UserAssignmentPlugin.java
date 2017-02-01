@@ -63,8 +63,9 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
     	List<HierarchicalConfiguration> configs = ConfigPlugins.getPluginConfig(this).configurationsAt("config");
         for (HierarchicalConfiguration hc : configs) {
         	List<HierarchicalConfiguration> workflows = hc.configurationsAt("workflow");
-            for (HierarchicalConfiguration workflow : workflows) {
-            	if (myconfig == null || workflow.getString("").equals("*") || workflow.getString("").equals(workflowName) ){
+        	configAssignmentStepName = hc.getString("assignmentStep", "- no assignment configured -");
+        	for (HierarchicalConfiguration workflow : workflows) {
+            	if (myconfig == null || ((workflow.getString("").equals("*") || workflow.getString("").equals(workflowName)) && step.getTitel().equals(configAssignmentStepName))){
             		myconfig = hc;
             	}
             }
@@ -97,11 +98,11 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 							users.add(new UserWrapper(u, false));
 					}
 				}
-			}
-			// get all current users
-			for (User u : s.getBenutzer()) {
-				if (!userExistsInList(u))
-					users.add(new UserWrapper(u, false));
+				// get all current users
+				for (User u : s.getBenutzer()) {
+					if (!userExistsInList(u))
+						users.add(new UserWrapper(u, false));
+				}
 			}
 		}
 	}
@@ -202,4 +203,7 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 		return PLUGIN_NAME;
 	}
 
+	public String getConfigTargetStepName() {
+		return configTargetStepName;
+	}
 }

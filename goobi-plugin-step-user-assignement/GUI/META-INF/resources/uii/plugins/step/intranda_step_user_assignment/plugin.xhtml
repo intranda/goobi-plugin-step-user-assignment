@@ -14,7 +14,9 @@
             <div class="box-title">
                 <h3>
                     <i class="fa fa-users"></i>
-                    <h:outputText value="#{msgs.plugin_user_assignment_title}" />
+                    <h:outputFormat value="#{msgs['plugin_user_assignment_title']}">
+                        <f:param value="#{AktuelleSchritteForm.myPlugin.configTargetStepName}" />
+                    </h:outputFormat>
                 </h3>
             </div>
 
