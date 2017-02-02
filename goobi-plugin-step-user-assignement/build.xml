@@ -182,7 +182,6 @@
 		<copy tofile="${dir.deploy}/plugin_UserAssignmentPlugin.xml" file="plugin_UserAssignmentPlugin.xml" />
 	</target>
 	    
-	    </target>
 
 	<!-- ================================= 
                   DEPLOY
