@@ -30,16 +30,25 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 	private List<UserWrapper> users;
 	private String configAssignmentStepName;
 	private String configTargetStepName;
+	private String configTemplateProperty;
 	
 	/**
 	 * initialise, read config etc.
 	 */
 	public void initialize(Step step, String returnPath) {
     	// get workflow name from properties
-		String workflowName = "";
+		String workflowName = null;
 		for (Processproperty pp : step.getProzess().getEigenschaften()) {
 			if (pp.getTitel().equals("Template")){
 				workflowName = pp.getWert();
+			}
+		}
+		// if property Template does not exist try goobiWorkflow instead
+		if (workflowName == null){
+			for (Processproperty pp : step.getProzess().getEigenschaften()) {
+				if (pp.getTitel().equals("goobiWorkflow")){
+					workflowName = pp.getWert();
+				}
 			}
 		}
 		
