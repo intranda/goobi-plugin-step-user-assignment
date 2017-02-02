@@ -179,6 +179,8 @@
 
 	<!-- Run all targets in appropiate order for clean compile-->
 	<target name="dist" depends="clean, createDirs, git.revision, jar.runnable" description="Creating everything for Jenkins." >
+		<copy tofile="${dir.deploy}/plugin_UserAssignmentPlugin.xml" file="plugin_UserAssignmentPlugin.xml" />
+	</target>
 	    
 	    </target>
 
@@ -199,3 +201,4 @@
 	</target>
 
 </project>
+
