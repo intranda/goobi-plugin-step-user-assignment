@@ -1,20 +1,10 @@
 package de.intranda.goobi.plugins;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -23,22 +13,17 @@ import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.plugin.interfaces.AbstractStepPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
-import org.primefaces.event.FileUploadEvent;
 
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.samples.BenutzergruppenTest;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 import lombok.extern.log4j.Log4j;
 
 @PluginImplementation
 @Log4j
 public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlugin, IPlugin {
-	private static final Logger logger = Logger.getLogger(UserAssignmentPlugin.class);
 	private static final String PLUGIN_NAME = "intranda_step_user_assignment";
 	private Step targetStep;
 	private List<Usergroup> oldGroups;
@@ -155,7 +140,7 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 			StepManager.saveStep(targetStep);
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("Error while saving the target step", e);
-			logger.error("DAOException while saving the target steps", e);
+			log.error("DAOException while saving the target steps", e);
 		}
 		
 		// load again all new assigned user and show success message
