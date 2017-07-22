@@ -1,0 +1,21 @@
+<config_plugin>
+
+	<config>
+		<workflow>Book workflow</workflow>
+		<assignmentStep>Scanning decision step</assignmentStep>
+		<targetStep>Book scanning</targetStep>
+	</config>
+	
+	<config>
+		<workflow>Book workflow</workflow>
+		<assignmentStep>QA decision step</assignmentStep>
+		<targetStep>Final QA</targetStep>
+	</config>
+	
+	<config>
+		<workflow>Other workflow</workflow>
+		<assignmentStep>Scanning decision step</assignmentStep>
+		<targetStep>Scanning</targetStep>
+	</config>
+	
+</config_plugin>
