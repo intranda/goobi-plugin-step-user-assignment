@@ -54,7 +54,7 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 		
     	// get the correct configuration for the right workflow
 		HierarchicalConfiguration myconfig = null;
-    	List<HierarchicalConfiguration> configs = ConfigPlugins.getPluginConfig(this).configurationsAt("config");
+		List<HierarchicalConfiguration> configs = ConfigPlugins.getPluginConfig(PLUGIN_NAME).configurationsAt("config");
         for (HierarchicalConfiguration hc : configs) {
         	List<HierarchicalConfiguration> workflows = hc.configurationsAt("workflow");
         	configAssignmentStepName = hc.getString("assignmentStep", "- no assignment configured -");
