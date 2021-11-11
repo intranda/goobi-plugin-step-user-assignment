@@ -7,4 +7,23 @@
 		<!-- configure the step name for which the users shall be assigned (e.g. Scanning)-->
 		<targetStep>Scanning</targetStep>
 	</config>
+	
+	<config>
+		<workflow>Archive workflow</workflow>
+		<assignmentStep>Scanning decision step</assignmentStep>
+		<targetStep>Book scanning</targetStep>
+	</config>
+	
+	<config>
+		<workflow>Archive workflow</workflow>
+		<assignmentStep>QA decision step</assignmentStep>
+		<targetStep>Final QA</targetStep>
+	</config>
+	
+	<config>
+		<workflow>Other workflow</workflow>
+		<assignmentStep>Scanning decision step</assignmentStep>
+		<targetStep>Scanning</targetStep>
+	</config>
+	
 </config_plugin>
