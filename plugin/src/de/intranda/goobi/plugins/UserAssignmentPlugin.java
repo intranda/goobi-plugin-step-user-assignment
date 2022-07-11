@@ -1,6 +1,5 @@
 package de.intranda.goobi.plugins;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,6 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
     private List<UserWrapper> users;
     private String configAssignmentStepName;
     private String configTargetStepName;
-    private String configTemplateProperty;
 
     /**
      * initialise, read config etc.
@@ -40,14 +38,14 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
         // get workflow name from properties
         String workflowName = null;
         for (Processproperty pp : step.getProzess().getEigenschaften()) {
-            if (pp.getTitel().equals("Template")){
+            if (pp.getTitel().equals("Template")) {
                 workflowName = pp.getWert();
             }
         }
         // if property Template does not exist try goobiWorkflow instead
-        if (workflowName == null){
+        if (workflowName == null) {
             for (Processproperty pp : step.getProzess().getEigenschaften()) {
-                if (pp.getTitel().equals("goobiWorkflow")){
+                if (pp.getTitel().equals("goobiWorkflow")) {
                     workflowName = pp.getWert();
                 }
             }
@@ -60,18 +58,20 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
             List<HierarchicalConfiguration> workflows = hc.configurationsAt("workflow");
             configAssignmentStepName = hc.getString("assignmentStep", "- no assignment configured -");
             for (HierarchicalConfiguration workflow : workflows) {
-                if (myconfig == null || ((workflow.getString("").equals("*") || workflow.getString("").equals(workflowName)) && step.getTitel().equals(configAssignmentStepName))){
+                if (myconfig == null || ((workflow.getString("").equals("*") || workflow.getString("").equals(workflowName))
+                        && step.getTitel().equals(configAssignmentStepName))) {
                     myconfig = hc;
                 }
             }
         }
-
-        // get right parameters from configuratino
-        configAssignmentStepName = myconfig.getString("assignmentStep", "- no assignment configured -");
-        configTargetStepName = myconfig.getString("targetStep", "- no assignment configured -");
-        super.returnPath = returnPath;
-        super.myStep = step;
-        loadAllCurrentUsers();
+        if (myconfig != null) {
+            // get right parameters from configuratino
+            configAssignmentStepName = myconfig.getString("assignmentStep", "- no assignment configured -");
+            configTargetStepName = myconfig.getString("targetStep", "- no assignment configured -");
+        }
+            super.returnPath = returnPath;
+            super.myStep = step;
+            loadAllCurrentUsers();
     }
 
     /**
@@ -116,11 +116,10 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
         return false;
     }
 
-
     /**
      * assign the newly selected users to the target step now
      */
-    public void assignSelectedUsers(){
+    public void assignSelectedUsers() {
         // any user selected at all?
         boolean anySelected = false;
         for (UserWrapper userWrapper : users) {
@@ -129,7 +128,7 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
             }
         }
         // no user selected - stop now
-        if (!anySelected){
+        if (!anySelected) {
             Helper.setFehlerMeldung("plugin_user_assignment_noUserForStepSelected");
             return;
         }
@@ -138,11 +137,11 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
         for (Usergroup ug : targetStep.getBenutzergruppen()) {
             StepManager.removeUsergroupFromStep(targetStep, ug);
         }
-        for (User u : targetStep.getBenutzer()){
+        for (User u : targetStep.getBenutzer()) {
             StepManager.removeUserFromStep(targetStep, u);
         }
-        targetStep.setBenutzer(new ArrayList<User>());
-        targetStep.setBenutzergruppen(new ArrayList<Usergroup>());
+        targetStep.setBenutzer(new ArrayList<>());
+        targetStep.setBenutzergruppen(new ArrayList<>());
         for (UserWrapper userWrapper : users) {
             if (userWrapper.getMember()) {
                 targetStep.getBenutzer().add(userWrapper.getUser());
@@ -172,11 +171,12 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
         return users;
     }
 
-    public void toggleUser(UserWrapper uw){
+    public void toggleUser(UserWrapper uw) {
         uw.setMember(!uw.getMember());
     }
 
-    @Override public boolean execute() {
+    @Override
+    public boolean execute() {
         return false;
     }
 
@@ -197,7 +197,7 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
 
     @Override
     public String getDescription() {
-        return PLUGIN_NAME;
+        return getTitle();
     }
 
     public String getConfigTargetStepName() {
