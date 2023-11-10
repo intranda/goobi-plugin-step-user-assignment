@@ -1,70 +1,91 @@
-<ui:composition xmlns:p="http://primefaces.org/ui" 
-                xmlns="http://www.w3.org/1999/xhtml" 
-                xmlns:ui="http://java.sun.com/jsf/facelets" 
-                xmlns:composite="http://java.sun.com/jsf/composite"
-                xmlns:h="http://java.sun.com/jsf/html" 
-                xmlns:x="http://myfaces.apache.org/tomahawk" 
-                xmlns:f="http://java.sun.com/jsf/core" 
-                intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:of="http://omnifaces.org/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:jsf="http://xmlns.jcp.org/jsf"
+				xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <h:form id="assignedusers" prependId="false">
-        <div class="box box-color lightgrey box-bordered">
-
-            <div class="box-title">
-                <h3>
-                    <i class="fa fa-users"></i>
-                    <h:outputFormat value="#{msgs['plugin_user_assignment_title']}">
-                        <f:param value="#{AktuelleSchritteForm.myPlugin.configTargetStepName}" />
-                    </h:outputFormat>
-                </h3>
-            </div>
-
-            <div class="box-content">
-             	<h5>
+		<intranda:box
+			boxType="neutral"
+			boxPadding="true"
+			icon="fa-users"
+			title="#{of:format1(msgs['plugin_user_assignment_title'], AktuelleSchritteForm.myPlugin.configTargetStepName)}">
+			<div class="mt-3">
+				<h3>
 					<h:outputText value="#{msgs.plugin_user_assignment_currentlyAssignedUserGroups}:" />
-				</h5>
-				<h:outputText value="#{msgs.plugin_user_assignment_currentlyNoUserAssigned}" rendered="#{AktuelleSchritteForm.myPlugin.oldGroups.size() == 0}" style="margin-left:10px"/>
-				<x:dataTable id="groups" styleClass="table table-hover table-nomargin dataTable table-bordered responsive border-right-light" rendered="#{AktuelleSchritteForm.myPlugin.oldGroups.size() > 0}"
-					var="item" value="#{AktuelleSchritteForm.myPlugin.oldGroups}">
-					<h:column>
-						<h:outputText value="#{item.titel}" />
-					</h:column>
-				</x:dataTable>
-             	<br/>
-             	<br/>
-             	<div class="dataTables_wrapper margin-top-10 block">
-					<h5>
-						<h:outputText value="#{msgs.plugin_user_assignment_selectUsersToAssign} (#{AktuelleSchritteForm.myPlugin.users.size()}):" />
-					</h5>
-					
-					<h:outputText value="#{msgs.plugin_user_assignment_currentlyNoUserAssignable}" rendered="#{AktuelleSchritteForm.myPlugin.users.size() == 0}" style="margin-left:10px"/>
-					<x:dataTable id="users" styleClass="table table-hover table-nomargin dataTable table-bordered responsive border-right-light" 
-						var="item" value="#{AktuelleSchritteForm.myPlugin.users}" rendered="#{AktuelleSchritteForm.myPlugin.users.size() > 0}">
-						<h:column>
-							<h:outputText value="#{item.user.nachVorname}" />
-						</h:column>
-	
-						<h:column>
-							<!-- Toggle user membership -->
-							<h:commandLink id="edit" styleClass="btn #{item.member?'btn-green':''} margin-right-5" rel="tooltip" action="#{NavigationForm.Reload}">
-								<i class="fa fa-check"></i>
-								<f:passThroughAttribute name="data-toggle" value="tooltip" />
-								<f:setPropertyActionListener target="#{item.member}" value="#{!item.member}" />
-								<f:ajax render=":assignedusers"/>
-							</h:commandLink>
-						</h:column>
-					</x:dataTable>
-	
-	             	<div class="dataTables_info" style="width:100%; padding-right:20px">
-						<!-- save -->
-						<h:commandLink id="userassign-save" styleClass="btn btn-lightgrey font-size-s pull-right" action="#{AktuelleSchritteForm.myPlugin.assignSelectedUsers}" immediate="true">
-							<i class="fa fa-save margin-right-5"></i>
-							<h:outputText value="#{msgs.uebernehmen}" />
-						</h:commandLink>
+				</h3>
+				<h:outputText value="#{msgs.plugin_user_assignment_currentlyNoUserAssigned}" rendered="#{AktuelleSchritteForm.myPlugin.oldGroups.size() == 0}" />
+				<div class="gw-table gw-table-fixed">
+					<div class="gw-table__wrapper">
+						<table
+							class="table table-bordered table-fixed table-hover"
+							id="groups"
+							role="grid"
+							rendered="#{AktuelleSchritteForm.myPlugin.oldGroups.size() > 0}">
+							<ui:repeat
+								var="item"
+								value="#{AktuelleSchritteForm.myPlugin.oldGroups}">
+								<tr role="row">
+									<td>
+										<h:outputText value="#{item.titel}" />
+									</td>
+								</tr>
+							</ui:repeat>
+						</table>
 					</div>
 				</div>
-             </div>
-        </div>
+			</div>
+			<div class="mt-5">
+				<h3>
+					<h:outputText value="#{msgs.plugin_user_assignment_selectUsersToAssign} (#{AktuelleSchritteForm.myPlugin.users.size()}):" />
+				</h3>
+				<h:outputText value="#{msgs.plugin_user_assignment_currentlyNoUserAssignable}" rendered="#{AktuelleSchritteForm.myPlugin.users.size() == 0}" />
+				<div class="gw-table gw-table-fixed">
+					<div class="gw-table__wrapper">
+						<table
+							class="table table-bordered table-fixed table-hover"
+							id="groups"
+							role="grid"
+							rendered="#{AktuelleSchritteForm.myPlugin.users.size() > 0}">
+							<ui:repeat
+								var="item"
+								value="#{AktuelleSchritteForm.myPlugin.users}">
+								<tr role="row">
+									<td>
+										<h:outputText value="#{item.user.nachVorname}" />
+									</td>
+									<td>
+										<div class="gw-table__actions__container">
+											<button
+												jsf:id="edit"
+												class="btn #{item.member?'btn-success':'btn-blank'}"
+												jsf:rel="tooltip"
+												jsf:action="bob">
+												<i class="fa fa-check"></i>
+												<f:setPropertyActionListener target="#{item.member}" value="#{!item.member}" />
+											</button>
+										</div>
+									</td>
+								</tr>
+							</ui:repeat>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button
+					jsf:id="button_action"
+					class="btn btn-action me-2"
+					jsf:action="#{AktuelleSchritteForm.myPlugin.assignSelectedUsers}"
+					immediate="true">
+					<i class="fa fa-save"></i>
+					<span>
+						<h:outputText value="#{msgs.uebernehmen}" />
+					</span>
+				</button>
+			</div>
+		</intranda:box>
     </h:form>
 </ui:composition>
