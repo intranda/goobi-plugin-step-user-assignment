@@ -36,5 +36,5 @@ The plugin is configured in the file `plugin_intranda_step_user_assignment.xml` 
 Parameter               | Explanation
 ------------------------|------------------------------------
 `workflow`              | The name of the production template being used.|
-`assignmentStep`        | The workflow step where the plugin activates to assign users for the next step (targetStep). |
+`assignmentStep`        | The workflow step where the plugin activates to assign users for the next step (`targetStep`). |
 `targetStep`            | The workflow step to which the user is assigned.|
