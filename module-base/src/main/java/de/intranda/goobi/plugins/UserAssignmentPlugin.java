@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.goobi.beans.Processproperty;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -23,6 +23,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 @Log4j
 public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlugin, IPlugin {
+    private static final long serialVersionUID = -7718261144382577236L;
     private static final String PLUGIN_NAME = "intranda_step_user_assignment";
     private Step targetStep;
     private List<Usergroup> oldGroups;
@@ -37,16 +38,16 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
     public void initialize(Step step, String returnPath) {
         // get workflow name from properties
         String workflowName = null;
-        for (Processproperty pp : step.getProzess().getEigenschaften()) {
-            if (pp.getTitel().equals("Template")) {
-                workflowName = pp.getWert();
+        for (GoobiProperty pp : step.getProzess().getProperties()) {
+            if ("Template".equals(pp.getPropertyName())) {
+                workflowName = pp.getPropertyValue();
             }
         }
         // if property Template does not exist try goobiWorkflow instead
         if (workflowName == null) {
-            for (Processproperty pp : step.getProzess().getEigenschaften()) {
-                if (pp.getTitel().equals("goobiWorkflow")) {
-                    workflowName = pp.getWert();
+            for (GoobiProperty pp : step.getProzess().getProperties()) {
+                if ("goobiWorkflow".equals(pp.getPropertyName())) {
+                    workflowName = pp.getPropertyValue();
                 }
             }
         }
@@ -58,7 +59,7 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
             List<HierarchicalConfiguration> workflows = hc.configurationsAt("workflow");
             configAssignmentStepName = hc.getString("assignmentStep", "- no assignment configured -");
             for (HierarchicalConfiguration workflow : workflows) {
-                if (myconfig == null || ((workflow.getString("").equals("*") || workflow.getString("").equals(workflowName))
+                if (myconfig == null || (("*".equals(workflow.getString("")) || workflow.getString("").equals(workflowName))
                         && step.getTitel().equals(configAssignmentStepName))) {
                     myconfig = hc;
                 }
@@ -69,9 +70,9 @@ public class UserAssignmentPlugin extends AbstractStepPlugin implements IStepPlu
             configAssignmentStepName = myconfig.getString("assignmentStep", "- no assignment configured -");
             configTargetStepName = myconfig.getString("targetStep", "- no assignment configured -");
         }
-            super.returnPath = returnPath;
-            super.myStep = step;
-            loadAllCurrentUsers();
+        super.returnPath = returnPath;
+        super.myStep = step;
+        loadAllCurrentUsers();
     }
 
     /**
