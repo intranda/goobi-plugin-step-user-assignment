@@ -3,6 +3,10 @@ title: User Assignment
 identifier: intranda_step_user_assignment
 description: Step Plugin for Assigning Tasks to Users
 published: true
+keywords:
+    - Goobi workflow
+    - Plugin
+    - Step Plugin
 ---
 
 ## Introduction
