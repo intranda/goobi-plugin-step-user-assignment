@@ -3,6 +3,10 @@ title: Benutzerzuweisung
 identifier: intranda_step_user_assignment
 description: Step Plugin für die Zuweisung von Aufgaben an Benutzer
 published: true
+keywords:
+    - Goobi workflow
+    - Plugin
+    - Step Plugin
 ---
 
 ## Einführung
