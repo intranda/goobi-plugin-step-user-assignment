@@ -4,13 +4,14 @@
 				xmlns:of="http://omnifaces.org/functions"
                 xmlns:f="http://java.sun.com/jsf/core"
 				xmlns:jsf="http://xmlns.jcp.org/jsf"
-				xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+				xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+				xmlns:util="http://goobi.io/util">
 
     <h:form id="assignedusers" prependId="false">
 		<intranda:box
 			boxType="neutral"
 			boxPadding="true"
-			icon="fa-users"
+			icon="users"
 			title="#{of:format1(msgs['plugin_user_assignment_title'], AktuelleSchritteForm.myPlugin.configTargetStepName)}">
 			<div class="mt-3">
 				<h3>
@@ -63,7 +64,7 @@
 												class="btn #{item.member?'btn-success':'btn-blank'}"
 												jsf:rel="tooltip"
 												jsf:action="bob">
-												<i class="fa fa-check"></i>
+												<util:icon icon="check" />
 												<f:setPropertyActionListener target="#{item.member}" value="#{!item.member}" />
 											</button>
 										</div>
@@ -80,10 +81,7 @@
 					class="btn btn-action me-2"
 					jsf:action="#{AktuelleSchritteForm.myPlugin.assignSelectedUsers}"
 					immediate="true">
-					<i class="fa fa-save"></i>
-					<span>
-						<h:outputText value="#{msgs.uebernehmen}" />
-					</span>
+					<util:icon-text icon="device-floppy" text="#{msgs.uebernehmen}" />
 				</button>
 			</div>
 		</intranda:box>
